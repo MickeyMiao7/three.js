@@ -2,6 +2,7 @@
  * https://github.com/mrdoob/eventdispatcher.js/
  */
 
+// 简单的观察者模式，是绝大多数 Class 的基类，如 Object3D, Material, Object3D
 class EventDispatcher {
 
 	addEventListener( type, listener ) {
