@@ -740,7 +740,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 					if ( allocateMemory ) {
 
-						state.texStorage2D( _gl.TEXTURE_2D, levels, glInternalFormat, image.width, image.height );
+						state.texStorage2D( _gl.TEXTURE_2D, levels, glInternalFormat, image.naturalWidth, image.naturalHeight );
 
 					}
 
