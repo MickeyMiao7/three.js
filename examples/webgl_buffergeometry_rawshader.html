@@ -95,7 +95,7 @@
 
 				// geometry
 				// nr of triangles with 3 vertices per triangle
-				const vertexCount = 200 * 3;
+				const vertexCount = 3;
 
 				const geometry = new THREE.BufferGeometry();
 
@@ -125,6 +125,7 @@
 				geometry.setAttribute( 'position', positionAttribute );
 				geometry.setAttribute( 'color', colorAttribute );
 
+				console.log(geometry);
 				// material
 
 				const material = new THREE.RawShaderMaterial( {

@@ -20,7 +20,6 @@
 				"imports": {
 					"three": "../../../build/three.module.js",
 					"three/addons/": "../../jsm/",
-					"meshline": "./Meshline.js",
 					"spline": "./THREE.ConstantSpline.js"
 				}
 			}
@@ -29,7 +28,6 @@
 		<script type="module">
 
 			import * as THREE from 'three';
-			import { Meshline } from 'meshline';
 			import { ConstantSpline } from 'spline';
 
 			import Stats from 'three/addons/libs/stats.module.js';
@@ -83,7 +81,8 @@
 				geometry.setFromPoints(spline.lPoints);
 
 				const material = new THREE.LineBasicMaterial( {
-					linewidth: 1
+					linewidth: 1,
+					wireframe: true,
 				} );
 
 				const line = new THREE.Line( geometry, material );
