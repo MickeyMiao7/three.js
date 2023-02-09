@@ -36,7 +36,7 @@ export class Meshline extends THREE.BufferGeometry  {
             if (i > 0) {
               this.next.push(p.x, p.y, p.z);
               this.next.push(p.x, p.y, p.z);
-            }
+        }
 
             // debug
             // this.positions.push(p.x - 1, p.y - 1, p.z);
@@ -62,10 +62,10 @@ export class Meshline extends THREE.BufferGeometry  {
             // this.indexes.push(index, index + 1, index + 2);
         }
 
-        console.log(this.positions, this.indexes)
         this.setAttribute('position', new THREE.Float32BufferAttribute(this.positions, 3));
-        // this.setAttribute('next', new THREE.Float32BufferAttribute(this.next, 3));
-        // this.setAttribute('previous', new THREE.Float32BufferAttribute(this.previous, 3));
+        this.setAttribute('next', new THREE.Float32BufferAttribute(this.next, 3));
+        this.setAttribute('previous', new THREE.Float32BufferAttribute(this.previous, 3));
+        this.setAttribute('side', new THREE.Float32BufferAttribute(this.side, 1));
 
         this.setIndex(new THREE.Uint16BufferAttribute(this.indexes, 1));
         // this.setAttribute('uv', new Float32Array(this.uvs));
@@ -104,7 +104,8 @@ const frag = `
 
     void main() {
         vec4 color = vec4(vColor);
-        gl_FragColor = color;
+        // gl_FragColor = color;
+        gl_FragColor = vec4(1.);
     }
 `;
 
@@ -112,7 +113,26 @@ const frag = `
 export class MeshlineMaterial extends THREE.ShaderMaterial {
     constructor(parameters) {
         super({
-            uniforms: {},
+            uniforms: {
+                resolution: { value: new THREE.Vector2(1, 1) },
+                lineWidth: { value: 1 },
+                map: { value: null },
+                useMap: { value: 0 },
+                alphaMap: { value: null },
+                useAlphaMap: { value: 0 },
+                color: { value: new THREE.Color(0xffffff) },
+                opacity: { value: 1 },
+                resolution: { value: new THREE.Vector2(1, 1) },
+                sizeAttenuation: { value: 1 },
+                dashArray: { value: 0 },
+                dashOffset: { value: 0 },
+                dashRatio: { value: 0.5 },
+                useDash: { value: 0 },
+                visibility: { value: 1 },
+                alphaTest: { value: 0 },
+                repeat: { value: new THREE.Vector2(1, 1) },
+            },
+            wireframe: true,
             vertexShader: vert,
             fragmentShader: frag
         });
