@@ -28,7 +28,6 @@ export class Meshline extends THREE.BufferGeometry  {
             const p = points[i];
             this.positions.push(p.x, p.y, p.z);
             this.positions.push(p.x, p.y, p.z);
-            // this.positions.push(p.x, p.y, p.z);
 
             this.previous.push(p.x, p.y, p.z);
             this.previous.push(p.x, p.y, p.z);
@@ -38,16 +37,13 @@ export class Meshline extends THREE.BufferGeometry  {
               this.next.push(p.x, p.y, p.z);
         }
 
-            // debug
-            // this.positions.push(p.x - 1, p.y - 1, p.z);
-            // this.positions.push(p.x + 1, p.y - 1, p.z);
             this.side.push(1, -1);
 
             const index = i * 2;
 
             if (i < this.pointTotal - 1) {
                 this.indexes.push(index, index + 1, index + 2);
-                // this.indexes.push(index + 2, index + 1, index + 3);
+                this.indexes.push(index + 2, index + 1, index + 3);
             }
         }
 
@@ -56,16 +52,11 @@ export class Meshline extends THREE.BufferGeometry  {
         this.next.push(end.x, end.y, end.z);
 
 
-        for (let i = 0; i < this.pointTotal; i ++) {
-            
-            // this.indexes.push(index, index + 1, index + 2);
-            // this.indexes.push(index, index + 1, index + 2);
-        }
-
         this.setAttribute('position', new THREE.Float32BufferAttribute(this.positions, 3));
         this.setAttribute('next', new THREE.Float32BufferAttribute(this.next, 3));
         this.setAttribute('previous', new THREE.Float32BufferAttribute(this.previous, 3));
         this.setAttribute('side', new THREE.Float32BufferAttribute(this.side, 1));
+        // this.setAttribute('width', new THREE.Float32BufferAttribute([1], 1));
 
         this.setIndex(new THREE.Uint16BufferAttribute(this.indexes, 1));
         // this.setAttribute('uv', new Float32Array(this.uvs));
@@ -78,11 +69,9 @@ export class Meshline extends THREE.BufferGeometry  {
 
 
 const vert = `
-    // attribute vec3 previous;';
-    // attribute vec3 next;';
+    attribute vec3 previous;
+    attribute vec3 next;
 
-    attribute float next;
-    attribute float previous;
     attribute float side;
     attribute float width;
 
@@ -93,8 +82,36 @@ const vert = `
         vColor = vec4(0., 1., 1., 0.);
 
         mat4 mvpMatrix = projectionMatrix * modelViewMatrix;
-        gl_Position = mvpMatrix * vec4( position, 1.0 );
-        // vec4 prevPos = mvpMatrix * vec4( ) ;
+
+        vec4 currentPosition = mvpMatrix * vec4(position, 1.);
+        vec4 prevPosition = mvpMatrix * vec4(previous, 1.);
+        vec4 nextPosition = mvpMatrix * vec4(next, 1.);
+
+        vec2 dir;
+        
+        if (nextPosition == currentPosition) {
+            dir = normalize(
+                vec2(currentPosition) - vec2(prevPosition)
+            );
+        } else if (currentPosition == prevPosition) {
+            dir = normalize(
+                vec2(nextPosition) - vec2(currentPosition)
+            );
+
+        } else {
+            vec2 dir1 = normalize(
+                vec2(currentPosition - prevPosition)
+            );
+            vec2 dir2 = normalize(
+                vec2(nextPosition - currentPosition)
+            );
+
+            dir = normalize(dir1 + dir2);
+        }
+
+        vec4 normal = vec4(-dir.y, dir.x, 0., 1.);
+        gl_Position = currentPosition;
+        gl_Position.xy += normal.xy * side * 1. * .5;
     }
 `;
 
